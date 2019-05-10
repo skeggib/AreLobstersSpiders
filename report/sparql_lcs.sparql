@@ -1,0 +1,14 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ncbi: <http://purl.obolibrary.org/obo/>
+SELECT ?lcs ?label
+WHERE {
+	?lcs ^rdfs:subClassOf*
+		ncbi:NCBITaxon_6693 ,
+		ncbi:NCBITaxon_6893 .
+	FILTER NOT EXISTS {
+		?sublcs ^rdfs:subClassOf*
+			ncbi:NCBITaxon_6693 ,
+			ncbi:NCBITaxon_6893 .
+		?sublcs rdfs:subClassOf ?lcs;
+	}
+}

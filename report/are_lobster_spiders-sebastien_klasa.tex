@@ -1,0 +1,61 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\title{Are lobsters spiders? - Finding taxonomy relations using linked data}
+\author{Sébastien Klasa}
+\date{8 May 2019}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+"Are lobsters spiders?" is an easy (if not obvious) question for a human, but difficult for a computer to answer unless using a specialized data model. Here we present a solution that uses linked data to answer the generalization of this question: given two taxa \footnote{In biology, a taxon is a group of one or more populations of an organism or organisms seen by taxonomists to form a unit. For example, African elephants form the genus \textit{Loxodonta} (Wikipedia).} A and B, we want to know if A is a B. We also present an implementation of this solution that retrieves results from a taxonomy dataset with SPARQL queries. We take our solution even further by allowing non-specialists to use our implementation by using general names like "spider" instead of taxa like "araneae".
+
+\section{Taxonomy relations}
+\label{sec:taxonomy_relations}
+
+To answer the question "Are lobsters spiders?", we first have to define what does it mean to be something. In this case, we can say that if animals can be classified in groups, which can also be classified in higher rank groups, we end up with a tree where leafs are species and nodes are groups of species of some rank. This type of classification is named a taxonomy. We can use this type of classification to define: "A is a B" is true when A is a direct or indirect child of B in the tree. To answer our first question we need to get a taxonomy tree, find the nodes "lobster" and "spider" and check if "lobster" is a child of "spider".
+\\
+
+To implement this solution we use the NCBI organismal classification ontology \footnote{\url{http://www.obofoundry.org/ontology/ncbitaxon.html}}, which contains nearly two millions taxa. We search for the lobster and spider URIS and then check if the lobster URI is a subclass of the spider URI using a SPARQL query (see figure \ref{lst:sparql_subClassOf}). This query can be generalized to any pair of taxa by replacing the NCBI URIs by another ones.
+
+\begin{figure}[h]
+\lstinputlisting[language=sparql]{sparql_subClassOf.sparql}
+\caption{SPARQL query that asks if a lobster is a spider.}
+\label{lst:sparql_subClassOf}
+\end{figure}
+
+While this solution tells us if a A is a B, we wanted to make a step further by searching for the relation between the two animals when A is not a B. One interesting information that we can get from the taxonomy tree is the group of animals in which both A and B are. In the tree, this group is the least common parent of the two nodes, or in the case of the ontology, the least common superclass (LCS) of A and B. The figure \ref{lst:sparql_lcs} shows a SPARQL query that looks for the LSC of the lobster and the spider. Again, ge can extend this query to other animals by replacing the URIs.
+
+\begin{figure}[h]
+\lstinputlisting[language=sparql]{sparql_lcs.sparql}
+\caption{SPARQL query that searches for the least common superclass of the lobster and the spider.}
+\label{lst:sparql_lcs}
+\end{figure}
+
+Although this solution is sufficient for a specialist that knows the needed taxa, it is hard for non-specialist users to find the URIs to build this query: 1) they have to find the exact taxon of the animal they are looking for (e.g. 'araneae' for 'spider'), 2) the names of nodes in the taxonomy ontology are numbers, so the users have to search the dataset to find it. To make our implementation easier to use, we decided to take advantage of another dataset that is more self-descriptive.
+
+\section{Finding taxa using the DBpedia dataset}
+
+The DBpedia dataset is a linked data representation of Wikipedia articles, which makes it easy to search for subjects, and in our case, for animals. We wanted to take advange of both the DBpedia and the NCBI taxonomy datasets, in order to enable a user to search for two animals in DBpedia and checks if they are related using the NCBI dataset. To achive that, we needed links between DBpedia and NCBI URIs, which does not exists in these datasets. However, a Wikipedia page for an animal ofter contains its taxon, which is represented in DBpedia by literals linked to the page by some properties. These property are not the same for every page so we needed to find the most relevant ones first.
+\\
+
+We implemented a script that iterates through all nodes in the NCBI dataset and, for each node, gets its taxon. The script then searches literals of the taxon in the DBpedia dataset and counts the number of occurences of properties that links the literals to a Wikipedia page. We manually selected property that are commonly used and that are relevant for our purpose. The figure \ref{lst:taxon_properties} lists the properties that we finnaly use to retrieve taxa from Wikipedia pages.
+
+\begin{figure}[h]
+\lstinputlisting{taxon_properties.txt}
+\caption{Properties that we use to search for the taxon of a Wikipedia page.}
+\label{lst:taxon_properties}
+\end{figure}
+
+Our final solution allows a user to enter two DBpedia URIs, we can search for the taxon of each URI and, based on the taxon, find the associated NCBI URIs. With those two URIs we can finaly search for the relations between them (as describes in section \ref{sec:taxonomy_relations}).
+
+\section{Implemantation}
+
+We implemented our final solution in C\#.NET Core using the dotNetRdf package. % TODO ...
+
+\end{document}

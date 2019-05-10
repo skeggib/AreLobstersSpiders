@@ -1,0 +1,40 @@
+https://github.com/dotnetrdf/dotnetrdf
+http://www.obofoundry.org/ontology/ncbitaxon.html
+https://jena.apache.org/documentation/fuseki2/
+https://hub.docker.com/r/stain/jena-fuseki/
+
+lobster: <http://purl.obolibrary.org/obo/NCBITaxon_6693>
+arachnida: <http://purl.obolibrary.org/obo/NCBITaxon_6854>
+    ricinulei: <http://purl.obolibrary.org/obo/NCBITaxon_58139>
+        ricinoididae: <http://purl.obolibrary.org/obo/NCBITaxon_88345>
+
+Least common superclass:
+
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+select ?lcs ?label
+where {
+  ?lcs ^rdfs:subClassOf*
+      <http://purl.obolibrary.org/obo/NCBITaxon_6693> ,
+      <http://purl.obolibrary.org/obo/NCBITaxon_6854> .
+  filter not exists {
+   	?sublcs ^rdfs:subClassOf*
+        <http://purl.obolibrary.org/obo/NCBITaxon_6693> ,
+      	<http://purl.obolibrary.org/obo/NCBITaxon_6854> .
+    ?sublcs rdfs:subClassOf ?lcs;
+  }
+  ?lcs rdfs:label ?label .
+}
+
+Taxon:
+
+prefix dbp: <http://dbpedia.org/property/>
+
+select ?taxon ?label ?uri {
+    ?uri rdfs:label ?label
+    filter contains(lcase(str(?label)), "spider")
+    ?uri dbp:taxon ?taxon
+}
+order by asc (strlen(?label))
