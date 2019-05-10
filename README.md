@@ -24,6 +24,8 @@ This part can be skipped if the SPARQL endpoint on
 
 ## Building and running the tool
 
+`cd AreLobstersSpiders`
+
 `docker build . -t are_lobster_spiders`
 
 `docker run --rm are_lobster_spiders isa DBpedia_URI_A DBpedia_URI_B`
