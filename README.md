@@ -9,7 +9,7 @@ Our solution and implementation is described in
 
 ## Prerequisites
 
-- `Docker`
+- Docker
 - The NCBI taxonomy ontology: [http://purl.obolibrary.org/obo/ncbitaxon.owl](http://purl.obolibrary.org/obo/ncbitaxon.owl)
 (unless the SPARQL endpoint on [http://134.209.17.65:3030/species/query](http://134.209.17.65:3030/species/query) is
 still running)
