@@ -10,14 +10,14 @@ Our solution and implementation is described in
 ## Prerequisites
 
 - `Docker`
-- The NCBI taxonomy ontology: [http://purl.obolibrary.org/obo/ncbitaxon.owl]()
-(unless the SPARQL endpoint on [http://134.209.17.65:3030/species/query]() is
+- The NCBI taxonomy ontology: [http://purl.obolibrary.org/obo/ncbitaxon.owl](http://purl.obolibrary.org/obo/ncbitaxon.owl)
+(unless the SPARQL endpoint on [http://134.209.17.65:3030/species/query](http://134.209.17.65:3030/species/query) is
 still running)
 
 ## Creating the SPARQL endpoint
 
 This part can be skipped if the SPARQL endpoint on
-[http://134.209.17.65:3030/species/query]() is available.
+[http://134.209.17.65:3030/species/query](http://134.209.17.65:3030/species/query) is available.
 
 ```
 wget http://purl.obolibrary.org/obo/ncbitaxon.owl
@@ -46,7 +46,7 @@ docker start fuseki
 
 ## Building and running the tool
 
-If a SPARQL endpoint other than [http://134.209.17.65:3030/species/query]() is used: replace the URL in `AreLobstersSpiders/Program.cs:18`.
+If a SPARQL endpoint other than [http://134.209.17.65:3030/species/query](http://134.209.17.65:3030/species/query) is used: replace the URL in `AreLobstersSpiders/Program.cs:18`.
 
 `cd AreLobstersSpiders`
 
