@@ -19,6 +19,17 @@ still running)
 This part can be skipped if the SPARQL endpoint on
 [http://134.209.17.65:3030/species/query](http://134.209.17.65:3030/species/query) is available.
 
+If the endpoint is not available you have to either create an enpoint using the
+Docker image, or to build the Docker image yourself.
+
+### Using the Docker image
+
+```
+docker run --name ncbi_taxon_endpoint -p 3030:3030 skeggib/ncbi_taxon_endpoint
+```
+
+### Building the Docker image
+
 ```
 wget http://purl.obolibrary.org/obo/ncbitaxon.owl
 docker run --name fuseki-data -v /fuseki busybox
